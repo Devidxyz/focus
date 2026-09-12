@@ -101,3 +101,6 @@ footer { display: flex; align-items: center; justify-content: space-between; pad
 .num.range input[type=range] { width: 96px; accent-color: var(--accent); }
 .num.range span { font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; }
 select { max-width: 175px; }
+
+footer { gap: 8px; }
+.saved-line { margin: 0; padding: 0 14px 10px; text-align: right; min-height: 14px; }

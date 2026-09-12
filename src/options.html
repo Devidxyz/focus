@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Focus Timer — import &amp; export</title>
+<link rel="stylesheet" href="popup.css">
+<link rel="stylesheet" href="options.css">
+</head>
+<body class="page">
+  <main>
+    <header class="page-header">
+      <span class="logo">⏱</span>
+      <div>
+        <h1>Import &amp; export sites</h1>
+        <p class="sub">Move your watched site list between browsers, or keep a backup.</p>
+      </div>
+    </header>
+
+    <section>
+      <h2>Export</h2>
+      <p class="lede">Saves every watched pattern, and whether each one is switched on, to a JSON file.</p>
+      <div class="row">
+        <button id="export" class="primary">Download site list</button>
+        <span class="count" id="export-count"></span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Import</h2>
+      <p class="lede">
+        Adds sites to your list — nothing is removed or overwritten, and patterns you
+        already have are skipped.
+      </p>
+
+      <div class="drop" id="drop">
+        <input type="file" id="file" accept=".json,.txt,application/json,text/plain">
+        <p class="drop-hint">or drop a file here</p>
+      </div>
+
+      <details class="paste">
+        <summary>Paste a list instead</summary>
+        <p class="lede">
+          One pattern per line, or the contents of an exported file. Lines starting
+          with <code>#</code> are ignored.
+        </p>
+        <textarea id="text" rows="7" spellcheck="false"
+          placeholder="reddit.com&#10;*.youtube.com&#10;discord.com/channels/12345"></textarea>
+        <button id="import-text">Import pasted list</button>
+      </details>
+
+      <p class="status" id="status" hidden></p>
+    </section>
+
+    <section>
+      <h2>Current list</h2>
+      <ul class="rules" id="rules"></ul>
+      <p class="empty" id="empty" hidden>Nothing watched yet.</p>
+    </section>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

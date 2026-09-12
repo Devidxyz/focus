@@ -1,0 +1,57 @@
+/* Overrides for the full-page options view; popup.css supplies the rest. */
+body.page {
+  width: auto;
+  min-height: 100vh;
+  padding: 26px 20px 60px;
+  display: flex;
+  justify-content: center;
+}
+body.page main { width: 100%; max-width: 620px; }
+
+.page-header {
+  /* popup.css styles `header` for the popup bar; undo that here */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  margin-bottom: 6px;
+}
+.page-header h1 { font-size: 19px; margin: 0; }
+.page-header .logo { font-size: 26px; }
+.sub { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+
+body.page section { border: 0; border-top: 1px solid var(--line); padding: 18px 0 6px; }
+body.page h2 { font-size: 12px; }
+.lede { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+
+.row { display: flex; align-items: center; gap: 12px; }
+.count { color: var(--muted); font-size: 12.5px; }
+
+.drop {
+  border: 1.5px dashed var(--line);
+  border-radius: 11px;
+  padding: 18px;
+  text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.drop.over { border-color: var(--accent); background: var(--chip); }
+.drop-hint { color: var(--muted); font-size: 12.5px; margin: 9px 0 0; }
+input[type=file] { font: inherit; color: var(--muted); max-width: 100%; }
+
+.paste { margin-top: 14px; font-size: 13px; }
+.paste summary { cursor: pointer; color: var(--muted); }
+.paste textarea {
+  width: 100%; margin: 10px 0; padding: 9px 10px;
+  font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; resize: vertical;
+}
+.paste textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.status { margin: 14px 0 0; font-size: 13px; padding: 9px 11px; border-radius: 8px; background: var(--chip); }
+.status.bad { color: var(--accent); }
+
+body.page .rules li { padding: 8px 10px; }
+body.page .rules .pat { font-size: 12.5px; }

@@ -3,16 +3,27 @@
   "name": "Focus Timer",
   "version": "1.0.0",
   "description": "Shows how long you've been on a site this session and nudges you at regular intervals. Never blocks anything.",
-  "permissions": ["storage", "tabs"],
-  "host_permissions": ["http://*/*", "https://*/*"],
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "background": {
     "service_worker": "src/background.js",
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/content.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     }
@@ -26,6 +37,10 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
+  },
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
   },
   "icons": {
     "16": "icons/icon16.png",

@@ -1,8 +1,12 @@
 # Focus Timer
 
 A Chrome extension that makes time on distracting sites **visible** instead of blocking it.
-It shows a small clock on the page while you're on a watched site, and quietly reminds
-you every few minutes. Nothing is ever blocked, and nothing needs to be dismissed.
+It shows a large, draggable clock on the page while you're on a watched site, and
+nudges you every few minutes. Nothing is ever blocked, and nothing needs to be dismissed.
+
+There is an Android counterpart in [../focus-app](../focus-app) that does the same
+job for apps instead of websites. The two share no code — see that project's README
+for why — but they agree on what a "session" is, down to the unit tests.
 
 ## Install
 
@@ -69,6 +73,29 @@ Notes:
 - The popup's **Use current site** / **Use current page** buttons prefill the box from
   the tab you're on — handy for grabbing a Discord server URL.
 
+## Import & export
+
+Click **Import / export sites** in the popup (or use the extension's Options entry)
+to open a full page for moving your site list around.
+
+**Export** downloads `focus-timer-sites-YYYY-MM-DD.json`, holding every pattern and
+whether each one is switched on.
+
+**Import** only ever adds. Nothing is removed or overwritten, and patterns you
+already have are skipped, so re-importing the same file twice is harmless. It reads:
+
+- a file exported from here,
+- a bare JSON array, of either rule objects or plain strings,
+- a hand-written list with one pattern per line, where `#` starts a comment.
+
+Use the file picker, drop a file onto the page, or paste a list into the box. You
+are told exactly what happened — how many were added, how many were already there,
+and how many lines could not be understood. Unreadable lines are skipped rather
+than failing the whole import.
+
+Import and export live on their own page rather than in the popup because opening
+a file picker closes a Chrome popup, which would abort the import halfway.
+
 ## Settings
 
 | Setting | Default | Meaning |
@@ -98,6 +125,7 @@ in each axis, so the clock keeps its relative place when you resize the window.
 | `src/content.js` | The on-page overlay, and the 1/second heartbeat that drives timing |
 | `src/common.js` | Pattern matching, settings defaults, formatting |
 | `src/popup.*` | The configuration popup |
+| `src/options.*` | The import & export page |
 
 Settings live in `chrome.storage.sync` (they follow your Chrome profile); live session
 timers live in `chrome.storage.local`.

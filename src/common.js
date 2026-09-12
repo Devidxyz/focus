@@ -80,7 +80,11 @@ export function compilePattern(pattern) {
   const slash = p.indexOf('/');
   const hostPat = (slash === -1 ? p : p.slice(0, slash)).toLowerCase();
   const pathPat = slash === -1 ? '' : p.slice(slash);
-  if (!hostPat) return null;
+  // A host can only be these characters. Without this check any stray line in
+  // an imported list ("not a url at all") would be accepted as a pattern that
+  // silently never matches anything. A port is rejected too: URL.hostname
+  // never includes one, so `localhost:3000` could not match either.
+  if (!/^[a-z0-9.*_-]+$/.test(hostPat)) return null;
 
   let hostTest;
   if (hostPat.startsWith('*.') && !hostPat.slice(2).includes('*')) {
@@ -154,4 +158,84 @@ export function formatDuration(ms) {
 
 export function ruleLabel(rule) {
   return (rule && (rule.label || rule.pattern)) || '';
+}
+
+// --- import / export --------------------------------------------------------
+
+export const EXPORT_TYPE = 'focus-timer-sites';
+export const EXPORT_VERSION = 1;
+
+export function buildExport(rules, now = new Date()) {
+  return {
+    type: EXPORT_TYPE,
+    version: EXPORT_VERSION,
+    exported: now.toISOString(),
+    rules: rules.map((r) => ({ pattern: r.pattern, enabled: r.enabled !== false })),
+  };
+}
+
+export function exportFilename(now = new Date()) {
+  return `focus-timer-sites-${now.toISOString().slice(0, 10)}.json`;
+}
+
+/**
+ * Reads back anything sensible: our own export, a bare JSON array (of rule
+ * objects or plain strings), or a hand-written list with one pattern per line
+ * and `#` comments.
+ *
+ * Throws when the file clearly is not a site list. Entries that are individually
+ * unusable are counted in `invalid` rather than failing the whole import.
+ */
+export function parseImport(text) {
+  const result = { rules: [], invalid: 0 };
+
+  const add = (pattern, enabled) => {
+    const p = String(pattern == null ? '' : pattern).trim();
+    if (!p) return;
+    if (!compilePattern(p)) { result.invalid++; return; }
+    result.rules.push({ pattern: p, enabled: enabled !== false });
+  };
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = undefined;
+  }
+
+  const structured = data !== null && (Array.isArray(data) || typeof data === 'object');
+  if (structured) {
+    const list = Array.isArray(data) ? data : data.rules;
+    if (!Array.isArray(list)) throw new Error('That file has no site list in it.');
+    for (const item of list) {
+      if (typeof item === 'string') add(item, true);
+      else if (item && typeof item === 'object') add(item.pattern, item.enabled);
+      else result.invalid++;
+    }
+    return result;
+  }
+
+  // Not JSON (or JSON that is just a number/string): treat it as a plain list.
+  for (const line of String(text).split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    add(trimmed, true);
+  }
+  return result;
+}
+
+/** Adds imported rules to the existing ones. Never removes or overwrites. */
+export function mergeRules(existing, incoming, makeId = newRuleId) {
+  const seen = new Set(existing.map((r) => r.pattern.trim().toLowerCase()));
+  const rules = existing.slice();
+  let added = 0;
+  let duplicates = 0;
+  for (const rule of incoming) {
+    const key = rule.pattern.trim().toLowerCase();
+    if (seen.has(key)) { duplicates++; continue; }
+    seen.add(key);
+    rules.push({ id: makeId(), pattern: rule.pattern, enabled: rule.enabled !== false });
+    added++;
+  }
+  return { rules, added, duplicates };
 }

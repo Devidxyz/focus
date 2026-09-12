@@ -188,6 +188,12 @@ async function init() {
   $('fill-site').addEventListener('click', () => fill(false));
   $('fill-page').addEventListener('click', () => fill(true));
 
+  $('io').addEventListener('click', () => {
+    // A full tab, not the popup: file pickers close a popup out from under you.
+    chrome.runtime.openOptionsPage();
+    window.close();
+  });
+
   $('reset-all').addEventListener('click', async () => {
     await chrome.runtime.sendMessage({ type: 'RESET_ALL' });
     refresh();
