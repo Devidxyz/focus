@@ -60,6 +60,11 @@
       <label for="warnSeconds">Reminder stays on screen for</label>
       <div class="num"><input type="number" id="warnSeconds" min="1" max="60" step="1"><span>sec</span></div>
     </div>
+    <p class="hint">Time counts only while the tab is visible and the browser window is focused. Set reminders to 0 to turn them off.</p>
+  </section>
+
+  <section>
+    <h2>Appearance</h2>
     <div class="field">
       <label for="position">Timer position</label>
       <select id="position">
@@ -69,9 +74,33 @@
         <option value="bottom-left">Bottom left</option>
         <option value="bottom-center">Bottom center</option>
         <option value="bottom-right">Bottom right</option>
+        <option value="custom">Custom (dragged)</option>
       </select>
     </div>
-    <p class="hint">Time counts only while the tab is visible and the browser window is focused. Set reminders to 0 to turn them off.</p>
+    <div class="field">
+      <label for="timerSize">Timer size</label>
+      <select id="timerSize">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="timerOpacity">Backdrop opacity</label>
+      <div class="num range">
+        <input type="range" id="timerOpacity" min="0.2" max="1" step="0.05">
+        <span id="opacityVal">85%</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="alertStyle">Reminder effect</label>
+      <select id="alertStyle">
+        <option value="glow">Red glow on screen edges</option>
+        <option value="tint">Full screen wash</option>
+        <option value="banner">Card only</option>
+      </select>
+    </div>
+    <p class="hint">Drag the timer around any watched page to place it exactly where you want — it stays there.</p>
   </section>
 
   <footer>

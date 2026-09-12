@@ -1,4 +1,7 @@
-import { loadSettings, withDefaults, findRule, formatDuration, ruleLabel } from './common.js';
+import {
+  loadSettings, saveSettings, withDefaults, findRule, formatDuration, ruleLabel,
+  TIMER_SIZES, clamp01,
+} from './common.js';
 
 // The content script pings roughly once a second while its page is visible and
 // focused. Those pings are the only clock: if they stop (tab hidden, window
@@ -43,8 +46,19 @@ function pruneSessions(now, graceMs) {
 function display(settings) {
   return {
     position: settings.position,
+    customPos: settings.customPos,
+    timerPx: TIMER_SIZES[settings.timerSize] || TIMER_SIZES.large,
+    timerOpacity: settings.timerOpacity,
+    alertStyle: settings.alertStyle,
     warnSeconds: settings.warnSeconds,
   };
+}
+
+// The timer was dragged: remember where it landed.
+async function setCustomPosition(x, y) {
+  settings.position = 'custom';
+  settings.customPos = { x: clamp01(x), y: clamp01(y) };
+  await saveSettings(settings);
 }
 
 // "5 minutes", "1.5 minutes", "90 seconds" — whichever reads best for the
@@ -145,6 +159,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         break;
       case 'GET_SESSIONS':
         sendResponse(await getSessions());
+        break;
+      case 'SET_POSITION':
+        await setCustomPosition(msg.x, msg.y);
+        sendResponse({ ok: true });
         break;
       case 'RESET_SESSION':
         delete sessions[msg.ruleId];

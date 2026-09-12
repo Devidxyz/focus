@@ -88,6 +88,13 @@ function renderRules(sessions) {
 }
 
 async function refresh() {
+  // A drag on the page changes position/customPos behind the popup's back.
+  const live = await loadSettings();
+  if (live.position !== settings.position) {
+    settings.position = live.position;
+    settings.customPos = live.customPos;
+    $('position').value = live.position;
+  }
   let sessions = {};
   try {
     sessions = (await chrome.runtime.sendMessage({ type: 'GET_SESSIONS' })) || {};
@@ -111,6 +118,17 @@ async function addPattern(raw) {
   $('pattern').value = '';
   await commit();
   refresh();
+}
+
+function bindSelect(id, key) {
+  const el = $(id);
+  el.value = settings[key];
+  el.addEventListener('change', async () => {
+    settings[key] = el.value;
+    // Picking a preset corner discards a position set by dragging.
+    if (key === 'position' && el.value !== 'custom') settings.customPos = null;
+    await commit();
+  });
 }
 
 function bindNumber(id, key, min, max) {
@@ -140,9 +158,17 @@ async function init() {
   bindNumber('warnMinutes', 'warnMinutes', 0, 240);
   bindNumber('warnSeconds', 'warnSeconds', 1, 60);
 
-  $('position').value = settings.position;
-  $('position').addEventListener('change', async () => {
-    settings.position = $('position').value;
+  bindSelect('position', 'position');
+  bindSelect('timerSize', 'timerSize');
+  bindSelect('alertStyle', 'alertStyle');
+
+  const opacity = $('timerOpacity');
+  opacity.value = settings.timerOpacity;
+  const showOpacity = () => ($('opacityVal').textContent = Math.round(opacity.value * 100) + '%');
+  showOpacity();
+  opacity.addEventListener('input', showOpacity);
+  opacity.addEventListener('change', async () => {
+    settings.timerOpacity = Number(opacity.value);
     await commit();
   });
 

@@ -9,9 +9,25 @@ export const DEFAULT_SETTINGS = {
   // How long the nudge stays on screen.
   warnSeconds: 5,
   // top-left | top-center | top-right | bottom-left | bottom-center | bottom-right
+  // | custom (set by dragging the timer, stored in customPos)
   position: 'top-right',
+  // Fractions of the free space in each axis, like background-position:
+  // {x:0,y:0} is the top-left corner, {x:1,y:1} the bottom-right one.
+  customPos: null,
+  // small | medium | large
+  timerSize: 'large',
+  timerOpacity: 0.85,
+  // glow (red vignette on the screen edges) | tint (whole screen) | banner
+  alertStyle: 'glow',
   rules: [],
 };
+
+export const TIMER_SIZES = { small: 20, medium: 28, large: 38 };
+
+export function clamp01(n) {
+  const v = Number(n);
+  return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0;
+}
 
 export function withDefaults(stored) {
   const s = Object.assign({}, DEFAULT_SETTINGS, stored || {});
