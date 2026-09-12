@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">⏱</span>
+      <div>
+        <h1>Focus Timer</h1>
+        <p id="status">Tracking on</p>
+      </div>
+    </div>
+    <label class="switch" title="Enable / disable tracking">
+      <input type="checkbox" id="enabled">
+      <span class="track"><span class="knob"></span></span>
+    </label>
+  </header>
+
+  <section>
+    <h2>Watched sites</h2>
+    <div class="add">
+      <input type="text" id="pattern" placeholder="e.g. discord.com/channels/12345" autocomplete="off" spellcheck="false">
+      <button id="add" class="primary">Add</button>
+    </div>
+    <div class="quick">
+      <button id="fill-site" class="ghost">Use current site</button>
+      <button id="fill-page" class="ghost">Use current page</button>
+    </div>
+    <p class="err" id="err" hidden></p>
+    <ul id="rules" class="rules"></ul>
+    <p class="empty" id="empty">No sites watched yet. Add one above.</p>
+    <details class="help">
+      <summary>Pattern syntax</summary>
+      <table>
+        <tr><td><code>reddit.com</code></td><td>the site and <code>www.</code>, any page</td></tr>
+        <tr><td><code>*.reddit.com</code></td><td>every subdomain too</td></tr>
+        <tr><td><code>old.reddit.com</code></td><td>that subdomain only</td></tr>
+        <tr><td><code>discord.com/channels/12345</code></td><td>one server only</td></tr>
+        <tr><td><code>youtube.com/watch</code></td><td>video pages, not the home page</td></tr>
+        <tr><td><code>youtube.com/@*</code></td><td><code>*</code> is a wildcard</td></tr>
+      </table>
+      <p>The most specific matching pattern wins, and each pattern keeps its own timer.</p>
+    </details>
+  </section>
+
+  <section>
+    <h2>Timing</h2>
+    <div class="field">
+      <label for="graceMinutes">Session keeps running if I come back within</label>
+      <div class="num"><input type="number" id="graceMinutes" min="0" max="120" step="0.5"><span>min</span></div>
+    </div>
+    <div class="field">
+      <label for="warnMinutes">Remind me every</label>
+      <div class="num"><input type="number" id="warnMinutes" min="0" max="240" step="1"><span>min</span></div>
+    </div>
+    <div class="field">
+      <label for="warnSeconds">Reminder stays on screen for</label>
+      <div class="num"><input type="number" id="warnSeconds" min="1" max="60" step="1"><span>sec</span></div>
+    </div>
+    <div class="field">
+      <label for="position">Timer position</label>
+      <select id="position">
+        <option value="top-left">Top left</option>
+        <option value="top-center">Top center</option>
+        <option value="top-right">Top right</option>
+        <option value="bottom-left">Bottom left</option>
+        <option value="bottom-center">Bottom center</option>
+        <option value="bottom-right">Bottom right</option>
+      </select>
+    </div>
+    <p class="hint">Time counts only while the tab is visible and the browser window is focused. Set reminders to 0 to turn them off.</p>
+  </section>
+
+  <footer>
+    <span id="saved" class="saved"></span>
+    <button id="reset-all" class="ghost danger">Reset all timers</button>
+  </footer>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
